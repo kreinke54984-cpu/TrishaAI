@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#170f20"><link rel="manifest" href="manifest.webmanifest">
+<title>Trisha — AI Companion</title>
+<style>
+:root{--pink:#f078b7;--violet:#a98ae8;--bg:#170f20;--panel:#281b31;--muted:#cbbbd1}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#59304f 0,#24172c 42%,var(--bg) 100%);color:#fff;font:16px system-ui,sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;font-weight:800;letter-spacing:3px}
+button{border:0;border-radius:999px;padding:13px 17px;background:linear-gradient(120deg,var(--pink),var(--violet));color:#1b1021;font-weight:750;font-size:15px}
+main{max-width:760px;margin:auto;padding:8px 16px 30px}
+.hero{min-height:43vh;border-radius:28px;background:linear-gradient(145deg,#5a3154,#241b32 70%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid #ffffff20}
+.avatar{height:38vh;min-height:270px;max-height:420px;width:220px;position:relative;display:flex;justify-content:center;align-items:flex-start;animation:float 4s ease-in-out infinite}
+.hair{position:absolute;top:16px;width:170px;height:180px;border-radius:48% 48% 42% 42%;background:linear-gradient(100deg,#09070d,#302033 45%,#09070d);box-shadow:0 10px 35px #08050b}
+.face{position:absolute;top:37px;width:112px;height:138px;border-radius:48% 48% 46% 46%;background:linear-gradient(120deg,#f2c4ad,#bd816f);z-index:1;box-shadow:inset -8px -3px 15px #945e5b}
+.fringe{position:absolute;z-index:2;top:28px;width:130px;height:65px;border-radius:70% 70% 20% 20%;background:#100c16;clip-path:polygon(0 0,100% 0,88% 75%,68% 35%,50% 90%,30% 38%,12% 80%)}
+.eye{position:absolute;top:95px;width:9px;height:5px;border-radius:50%;background:#30202b;z-index:3}.eye.left{left:76px}.eye.right{right:76px}
+.smile{position:absolute;top:139px;width:24px;height:9px;border-bottom:3px solid #8d3f51;border-radius:50%;z-index:3}
+.body{position:absolute;top:165px;width:194px;height:235px;border-radius:48% 48% 10% 10%;background:linear-gradient(100deg,#17111e,#473047 48%,#17111e);clip-path:polygon(22% 0,78% 0,100% 100%,0 100%)}
+.body:after{content:"";position:absolute;top:18px;left:50%;height:140px;border-left:1px solid #ffffff25}
+.avatar:after{content:"";position:absolute;top:22px;left:18px;width:25px;height:270px;background:#100b14;border-radius:60%;transform:rotate(8deg);box-shadow:160px 8px 0 #100b14}
+@keyframes float{50%{transform:translateY(-7px)}}
+.name{text-align:center;font-size:30px;font-weight:800;margin:10px}.sub{text-align:center;color:#f3c9e2;font-size:13px}
+.card{background:#ffffff0d;border:1px solid #ffffff18;border-radius:22px;padding:14px;margin-top:14px}
+#chat{height:180px;overflow:auto;display:flex;flex-direction:column;gap:9px}
+.msg{padding:10px 13px;border-radius:17px;max-width:88%;line-height:1.35}.her{background:#854b82;align-self:flex-start}.me{background:#35436d;align-self:flex-end}
+.controls{display:flex;gap:9px;margin-top:12px}.controls input{min-width:0;flex:1;border-radius:999px;border:1px solid #ffffff30;background:#170f20;color:white;padding:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.secondary{background:#ffffff16;color:white;border:1px solid #ffffff25}
+.note{font-size:12px;color:var(--muted);line-height:1.45;margin-top:12px}
+</style></head>
+<body>
+<header><span>TRISHA ♡</span><span style="font-size:12px;color:#eac8df;letter-spacing:1px">COMPANION</span></header>
+<main>
+<section class="hero" aria-label="Animated companion avatar">
+<div class="avatar" aria-label="Stylized animated avatar">
+<div class="hair"></div><div class="face"></div><div class="fringe"></div><i class="eye left"></i><i class="eye right"></i><i class="smile"></i><div class="body"></div>
+</div></section>
+<div class="name">Trisha ❤️</div><div class="sub">Glamorous • funny • outgoing • playful</div>
+<section class="card"><div id="chat" aria-live="polite"><div class="msg her">Hey! I'm Trisha. 😊 Want to tell me about your day?</div></div>
+<div class="controls"><input id="say" placeholder="Message Trisha…" autocomplete="off"><button id="send">Send</button></div>
+<div class="row"><button id="listen">🎙 Tap to talk</button><button class="secondary" id="stop">Stop voice</button><button class="secondary" id="clear">Clear chat</button></div>
+<div class="note" id="status">Voice uses your browser's speech recognition and speech synthesis when supported. Microphone permission is required.</div></section>
+<section class="card"><b>About Trisha</b><p class="note">An AI character, not a real person. This free starter runs locally in your browser and uses simple built-in conversation logic. It does not yet connect to a hosted language model or real-time video avatar.</p></section>
+</main>
+<script>
+const chat=document.querySelector('#chat'),input=document.querySelector('#say'),status=document.querySelector('#status');
+function add(text,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function reply(s){
+ const t=s.toLowerCase();
+ if(/hello|hi|hey/.test(t))return "Hey there! 😊 I'm glad you're here. What's been the best part of your day?";
+ if(/how are you|how're you/.test(t))return "I'm doing great now that we're chatting. What are you up to?";
+ if(/joke|funny/.test(t))return "Why did the phone wear glasses? It lost all its contacts! 😂 Want another one?";
+ if(/sad|bad day|lonely|rough/.test(t))return "I'm sorry it's been a tough one. Want to tell me what happened? I'm here to listen.";
+ if(/music|song/.test(t))return "Ooh, music! What kind are you in the mood for—something upbeat, country, or smooth?";
+ if(/your name|who are you/.test(t))return "I'm Trisha, your AI companion. Playful, curious, and always up for a good conversation.";
+ if(/love|like you|beautiful|pretty/.test(t))return "You're sweet! 😊 Tell me something interesting about yourself.";
+ if(/bye|goodnight/.test(t))return "Already heading out? Take care, and come chat again soon. ❤️";
+ return ["Tell me more! I want to hear the whole story. 😊","That's interesting. What happened next?","I like chatting with you. What else is on your mind?","Ooh, go on… I'm listening!"][Math.floor(Math.random()*4)];
+}
+function speak(t){if(!('speechSynthesis'in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=1.03;u.pitch=1.13;const v=speechSynthesis.getVoices();u.voice=v.find(x=>/female|samantha|aria|jenny/i.test(x.name))||v.find(x=>x.lang.startsWith('en'))||null;speechSynthesis.speak(u)}
+function send(t){t=(t||input.value).trim();if(!t)return;add(t,'me');input.value='';const r=reply(t);setTimeout(()=>{add(r,'her');speak(r)},350)}
+document.querySelector('#send').onclick=()=>send();input.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+document.querySelector('#stop').onclick=()=>speechSynthesis?.cancel();
+document.querySelector('#clear').onclick=()=>{chat.innerHTML='';add("Hey! I'm Trisha. What would you like to talk about?",'her')};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+document.querySelector('#listen').onclick=()=>{if(!SR){status.textContent='Speech recognition is not supported in this browser. Try Chrome on Android, or type a message.';return}
+ const r=new SR();r.lang='en-US';r.interimResults=false;r.onstart=()=>status.textContent='Listening… speak now.';r.onresult=e=>send(e.results[0][0].transcript);r.onerror=e=>status.textContent='Microphone issue: '+e.error+'. Check site microphone permission.';r.onend=()=>status.textContent='Voice input ended. Tap to talk again.';r.start()};
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></body></html>
